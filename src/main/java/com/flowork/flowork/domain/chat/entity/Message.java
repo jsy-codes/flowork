@@ -1,39 +1,35 @@
-package com.flowork.flowork.domain;
+package com.flowork.flowork.domain.chat.entity;
 
-import com.flowork.flowork.domain.user.Role;
+import com.flowork.flowork.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class User {
+public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ChatRoom chatRoom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User sender;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String content;
 
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void init(){
+    public void init() {
         this.createdAt = LocalDateTime.now();
     }
 }

@@ -2,8 +2,8 @@ package com.flowork.flowork.security;
 
 
 
-import com.flowork.flowork.domain.User;
-import com.flowork.flowork.domain.user.Role;
+import com.flowork.flowork.domain.user.entity.User;
+import com.flowork.flowork.domain.user.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

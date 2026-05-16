@@ -1,6 +1,6 @@
-package com.flowork.flowork.domain;
+package com.flowork.flowork.domain.chat.entity;
 
-import com.flowork.flowork.domain.chat.RoomRole;
+import com.flowork.flowork.domain.user.entity.User;
 
 import jakarta.persistence.*;
 import lombok.*;
