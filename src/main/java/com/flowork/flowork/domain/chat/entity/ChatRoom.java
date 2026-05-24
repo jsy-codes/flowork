@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -30,4 +29,7 @@ public class ChatRoom {
         createdAt = LocalDateTime.now();
     }
 
+    public void updateName(String name){
+        this.name = name;
+    }
 }
