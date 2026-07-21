@@ -10,5 +10,5 @@ public class CreateRoomRequest {
     @NotBlank
     private String name;
     @NotNull
-    private RoomType roomType;
+    private RoomType type;
 }

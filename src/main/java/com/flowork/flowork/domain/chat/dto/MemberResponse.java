@@ -14,7 +14,7 @@ public class MemberResponse {
     private Long id;
     private String username;
     private RoomRole role;
-    private LocalDateTime createdAt;
+    private LocalDateTime joinedAt;
 
     public static MemberResponse from(ChatRoomMember member) {
         return new MemberResponse(
