@@ -1,7 +1,7 @@
 package com.flowork.flowork.security.config;
 
 import com.flowork.flowork.security.CustomUserDetailsService;
-import com.flowork.flowork.security.JwtAuthenticationFilter;
+import com.flowork.flowork.security.jwt.JwtAuthenticationFilter;
 import com.flowork.flowork.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
