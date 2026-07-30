@@ -4,6 +4,7 @@ import com.flowork.flowork.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -24,4 +25,11 @@ public class Mention {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User mentioned;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void init(){
+        createdAt = LocalDateTime.now();
+    }
 }

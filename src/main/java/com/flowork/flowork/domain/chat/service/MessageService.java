@@ -64,4 +64,8 @@ public class MessageService {
         String value = redisTemplate.opsForValue().get(key);
         return value != null ? Long.parseLong(value) : null;
     }
+    public Message findById(Long id){
+        return messageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지")  );
+    }
 }
