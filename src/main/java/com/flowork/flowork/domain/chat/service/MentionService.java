@@ -1,7 +1,7 @@
 package com.flowork.flowork.domain.chat.service;
 
 import com.flowork.flowork.domain.activity.entity.ActivityType;
-import com.flowork.flowork.domain.activity.repository.MentionRepository;
+import com.flowork.flowork.domain.chat.repository.MentionRepository;
 import com.flowork.flowork.domain.activity.service.ActivityLogService;
 import com.flowork.flowork.domain.chat.entity.Mention;
 import com.flowork.flowork.domain.chat.entity.Message;

@@ -1,4 +1,4 @@
-package com.flowork.flowork.domain.activity.repository;
+package com.flowork.flowork.domain.chat.repository;
 
 
 import com.flowork.flowork.domain.chat.entity.Mention;
