@@ -2,13 +2,14 @@ package com.flowork.flowork.domain.task.dto;
 
 import com.flowork.flowork.domain.task.entity.Task;
 import com.flowork.flowork.domain.task.entity.TaskStatus;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaskResponse {
     private Long id;
     private String title;

@@ -1,7 +1,7 @@
 package com.flowork.flowork.domain.task.entity;
 
 public enum TaskStatus {
-    PEDING,
+    PENDING,
     IN_PROGRESS,
     COMPLETED
 }

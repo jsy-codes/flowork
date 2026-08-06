@@ -1,6 +1,7 @@
 package com.flowork.flowork.domain.chat.service;
 
 import com.flowork.flowork.domain.activity.entity.ActivityType;
+import com.flowork.flowork.domain.activity.event.ActivityLogEvent;
 import com.flowork.flowork.domain.chat.repository.MentionRepository;
 import com.flowork.flowork.domain.activity.service.ActivityLogService;
 import com.flowork.flowork.domain.chat.entity.Mention;
@@ -9,6 +10,7 @@ import com.flowork.flowork.domain.user.entity.User;
 import com.flowork.flowork.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class MentionService {
     private final MentionRepository mentionRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ActivityLogService activityLogService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private static final Pattern MENTION_PATTERN = Pattern.compile("@(\\w+)");
 
@@ -54,7 +56,8 @@ public class MentionService {
                 );
                 log.info("멘션 알림 발송 - to userId: {}",mentioned.getId());
                 //Activity Log 비동기 기록
-                activityLogService.log(mentioned.getId(), ActivityType.MENTION_RECEIVED,message.getId());
+                eventPublisher.publishEvent(
+                        new ActivityLogEvent(mentioned.getId(), ActivityType.MENTION_RECEIVED, message.getId()));
             });
 
         }

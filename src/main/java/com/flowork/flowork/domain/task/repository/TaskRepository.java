@@ -19,4 +19,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByAssigneeAndStatus(User assignee, TaskStatus status);
 
+    // 완료된 Task만 — 소요시간 계산용임.
+    @Query("SELECT t FROM Task t WHERE t.message.chatRoom = :chatRoom AND t.status = 'COMPLETED'")
+    List<Task> findCompletedByChatRoom(@Param("chatRoom") ChatRoom chatRoom);
+
 }

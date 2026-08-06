@@ -35,7 +35,7 @@ public class Task {
     @PrePersist
     public void init() {
         this.createdAt = LocalDateTime.now();
-        this.completedAt = LocalDateTime.now();
+        this.status = TaskStatus.PENDING;
     }
     public void updateStatus(TaskStatus status) {
         this.status = status;

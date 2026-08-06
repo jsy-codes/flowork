@@ -1,6 +1,7 @@
 package com.flowork.flowork.domain.task.service;
 
 import com.flowork.flowork.domain.activity.entity.ActivityType;
+import com.flowork.flowork.domain.activity.event.ActivityLogEvent;
 import com.flowork.flowork.domain.activity.service.ActivityLogService;
 import com.flowork.flowork.domain.chat.entity.ChatRoom;
 import com.flowork.flowork.domain.chat.entity.Message;
@@ -14,6 +15,7 @@ import com.flowork.flowork.domain.task.repository.TaskRepository;
 import com.flowork.flowork.domain.user.entity.User;
 import com.flowork.flowork.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,8 @@ public class TaskService {
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
     private final UserService userService;
-    private final ActivityLogService activityLogService;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     //task 생성
     @Transactional
@@ -47,7 +50,8 @@ public class TaskService {
         taskRepository.save(task);
 
         //TASK_CREATED ActivityLog 비동기 기록.
-        activityLogService.log(creatorId, ActivityType.TASK_CREATED,task.getId());
+        eventPublisher.publishEvent(
+                new ActivityLogEvent(creatorId, ActivityType.TASK_CREATED, task.getId()));
         return TaskResponse.from(task);
 
     }
@@ -60,7 +64,8 @@ public class TaskService {
         task.updateStatus(status);
         //완료시 TASK_COMPLETED Activitylog 비동기적 기록
         if(status == TaskStatus.COMPLETED){
-            activityLogService.log(userId, ActivityType.TASK_COMPLETED,task.getId());
+            eventPublisher.publishEvent(
+                    new ActivityLogEvent(userId, ActivityType.TASK_COMPLETED, task.getId()));
         }
         return TaskResponse.from(task);
     }

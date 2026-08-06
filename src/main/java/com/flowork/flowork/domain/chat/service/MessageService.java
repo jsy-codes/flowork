@@ -1,5 +1,7 @@
 package com.flowork.flowork.domain.chat.service;
 
+import com.flowork.flowork.domain.activity.entity.ActivityType;
+import com.flowork.flowork.domain.activity.event.ActivityLogEvent;
 import com.flowork.flowork.domain.chat.dto.ChatMessageResponse;
 import com.flowork.flowork.domain.chat.entity.ChatRoom;
 import com.flowork.flowork.domain.chat.entity.Message;
@@ -9,6 +11,7 @@ import com.flowork.flowork.domain.user.entity.User;
 import com.flowork.flowork.domain.user.repository.UserRepository;
 import com.flowork.flowork.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -24,12 +27,13 @@ public class MessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserService userService;
     private final RedisTemplate<String, String> redisTemplate;
+    private final ApplicationEventPublisher eventPublisher;
 
     //** 메시지 저장-WebSocket 핸들러에서 call**
     @Transactional
-    public ChatMessageResponse saveMessage(Long roomId,Long senderId, String content) {
+    public ChatMessageResponse saveMessage(Long roomId, Long senderId, String content) {
         ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
         User sender = userService.findById(senderId);
 
         Message message = Message.builder()
@@ -37,7 +41,13 @@ public class MessageService {
                 .sender(sender)
                 .content(content)
                 .build();
-        return ChatMessageResponse.from(messageRepository.save(message));
+        messageRepository.save(message);
+
+        // MESSAGE_CREATED 이벤트 발행
+        eventPublisher.publishEvent(
+                new ActivityLogEvent(senderId, ActivityType.MESSAGE_CREATED, message.getId()));
+
+        return ChatMessageResponse.from(message);
     }
 
     // ** 채팅 내역 - cursor 기반 페이지네이션
