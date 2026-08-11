@@ -31,4 +31,15 @@ public class ContirubutionController {
             @PathVariable Long roomId) {
         return ResponseEntity.ok(contributionService.getRoomHealth(roomId));
     }
+    /** CSV Export */
+    @GetMapping("/contributions/export")
+    public ResponseEntity<byte[]> exportContributions(@PathVariable Long roomId) {
+        byte[] csv = contributionService.exportContributionsCsv(roomId);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition",
+                        "attachment; filename=\"room-" + roomId + "-contributions.csv\"")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .body(csv);
+    }
 }

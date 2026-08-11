@@ -130,4 +130,26 @@ public class ContributionService {
                 avg.isPresent() ? avg.getAsDouble() : null
         );
     }
+    //** CSV Export(FE 추가예정.) - 멤버별 기여 breakdown
+    public byte[] exportContributionsCsv(Long roomId) {
+        List<ContributionResponse> contributions = getContributions(roomId);
+
+        StringBuilder csv = new StringBuilder();
+
+        // 헤더
+        csv.append("userId,username,messageCount,mentionCount,taskCreatedCount,taskCompletedCount,avgCompletionMinutes\n");
+
+        // 데이터 행
+        for (ContributionResponse c : contributions) {
+            csv.append(c.getUserId()).append(",")
+                    .append(c.getUsername()).append(",")
+                    .append(c.getMessageCount()).append(",")
+                    .append(c.getMentionCount()).append(",")
+                    .append(c.getTaskCreatedCount()).append(",")
+                    .append(c.getTaskCompletedCount()).append(",")
+                    .append(c.getAvgCompletionMinutes() != null ? c.getAvgCompletionMinutes() : "").append("\n");
+        }
+
+        return csv.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    }
 }
