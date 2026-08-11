@@ -1,27 +1,27 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/flowork
+    url: jdbc:mysql://localhost:3307/flowork
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   jpa:
     hibernate:
-      ddl-auto: update   # ?? ????? update
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
-  redis:
-    host: localhost
-    port: 6379
-
-  jwt:
-    secret: flowork-secret-key-must-be-at-least-32-characters!!
-    access-token-expiration-ms: 1800000     # 30분
-    refresh-token-expiration-ms: 604800000  # 7일
-
+jwt:
+  secret: flowork-secret-key-32-characters
+  access-token-expiration-ms: 1800000
+  refresh-token-expiration-ms: 604800000
 
 server:
   port: 8080

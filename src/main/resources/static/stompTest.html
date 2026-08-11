@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>STOMP Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+<h3>STOMP 테스트</h3>
+
+<!-- userId input 추가 -->
+<div>
+    <input id="token" placeholder="accessToken" style="width:600px"/>
+    <input id="userId" placeholder="userId (숫자)" style="width:80px"/>  <!-- 추가 -->
+    <button onclick="connect()">연결</button>
+    <button onclick="disconnect()">끊기</button>
+</div>
+<br>
+<div>
+    <input id="roomId" placeholder="roomId" value="1"/>
+    <input id="content" placeholder="메시지 내용"/>
+    <button onclick="sendMessage()">전송</button>
+</div>
+<br>
+<div id="log" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:scroll"></div>
+
+<script>
+    let client;
+
+    function log(msg) {
+        const div = document.getElementById('log');
+        div.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${msg}</div>`;
+        div.scrollTop = div.scrollHeight;
+    }
+
+    function connect() {
+        const token = document.getElementById('token').value;
+        const roomId = document.getElementById('roomId').value;
+        const userId = document.getElementById('userId').value;  // 추가
+
+        client = new StompJs.Client({
+            webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+            connectHeaders: {
+                Authorization: 'Bearer ' + token
+            },
+            onConnect: () => {
+                log('✅ STOMP 연결 성공');
+
+                // 채팅방 구독
+                client.subscribe('/topic/room.' + roomId, (message) => {
+                    const body = JSON.parse(message.body);
+                    log(`📨 수신: [${body.senderUsername}] ${body.content}`);
+                });
+                // connect() 안에 추가
+                client.subscribe('/topic/user.' + userId, (message) => {
+                    log(`🔔 알림: ${message.body}`);
+                });
+
+                log('📡 /topic/room.' + roomId + ' 구독 완료');
+            },
+            onDisconnect: () => log('❌ 연결 끊김'),
+            onStompError: (frame) => log('🚨 STOMP 에러: ' + frame.headers['message'])
+        });
+
+        client.activate();
+    }
+
+    function disconnect() {
+        if (client) client.deactivate();
+    }
+
+    function sendMessage() {
+        const roomId = document.getElementById('roomId').value;
+        const content = document.getElementById('content').value;
+
+        client.publish({
+            destination: '/pub/chat.send',
+            body: JSON.stringify({ roomId: parseInt(roomId), content: content })
+        });
+
+        log(`📤 전송: ${content}`);
+    }
+</script>
+</body>
+</html>
